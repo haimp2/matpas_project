@@ -1,5 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const {Client} = require('pg');
+
+const fs = require('fs');
+
+const client = new Client({
+    user: "postgres",
+    password: "1973",
+    host: "localhost",
+    port: 5432,
+    database: "matpas"
+})
 
 const feedRoutes = require('./routes/feed');
 
@@ -17,5 +28,13 @@ app.use((req, res, next)=>{
 
 app.use('/feed', feedRoutes);
 
-app.listen(3000);
+client.connect()
+.then(result =>{
+    app.listen(3000);    
+})
+// .then(() => client.query("SELECT * FROM mytable1"))
+// .then(results=> fs.writeFile('test.csv', JSON.stringify(results.rows), ()=>{}))
+.catch(err => console.log(err))
+
+
 
